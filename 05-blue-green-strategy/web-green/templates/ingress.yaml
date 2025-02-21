@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: robokart-green
+    namespace: robokart
+    annotations:
+        alb.ingress.kubernetes.io/scheme: internet-facing
+        alb.ingress.kubernetes.io/target-type: ip
+        alb.ingress.kubernetes.io/tags: Environment=dev,version=green,Project=robokart-green
+        alb.ingress.kubernetes.io/group.name: robokart-green
+spec:
+  ingressClassName: alb
+  rules:
+  - host: "green.royalreddy.site"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-green
+            port:
+              number: 80

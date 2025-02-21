@@ -1,0 +1,7 @@
+pyuwsgi
+Flask
+requests
+pika
+prometheus_client
+opentracing
+instana

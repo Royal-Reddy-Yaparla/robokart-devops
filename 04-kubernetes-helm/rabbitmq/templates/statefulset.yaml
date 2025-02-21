@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+  namespace: robokart
+  labels:
+    app: rabbitmq
+    project: robokart
+    tier: db
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+      project: robokart
+      tier: db
+  serviceName: "rabbitmq"
+  replicas: {{ .Values.statefulset.replicas }}
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        project: robokart
+        tier: db
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq
+        envFrom:
+        - secretRef:
+            name: rabbitmq
+        volumeMounts:
+        - name: rabbitmq
+          mountPath: /var/lib/rabbitmq
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ebs-sc"
+      resources:
+        requests:
+          storage: 2Gi

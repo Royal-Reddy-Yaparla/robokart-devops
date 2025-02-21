@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: robokart
+spec:
+  type: LoadBalancer
+  selector:
+    app: web
+    tier: web
+    project: robokart
+  ports:
+  - name: web-port
+    protocol: TCP
+    port: 80 # this port belongs to service
+    targetPort: 80 # this port belongs to container

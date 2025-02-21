@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment
+  namespace: robokart
+  labels: # these labels are deployment labels
+    app: payment
+    project: robokart
+    tier: app
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels: # these labels are used to find the pods
+      app: payment
+      project: robokart
+      tier: app
+  template:
+    metadata:
+      labels: # these labels are pod labels
+        app: payment
+        project: robokart
+        tier: app
+    spec:
+      containers:
+      - name: payment
+        image: "joindevops/payment:{{ .Values.deployment.imageVersion }}"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+          limits:
+            cpu: "100m"
+            memory: "256Mi"
+        envFrom:
+        - secretRef:
+            name: payment

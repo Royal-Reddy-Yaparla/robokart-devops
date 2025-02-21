@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user
+  namespace: robokart
+data:
+  MONGO: "true"

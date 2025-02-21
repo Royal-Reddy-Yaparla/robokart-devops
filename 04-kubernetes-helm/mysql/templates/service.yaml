@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: robokart
+  labels:
+    app: mysql
+    project: robokart
+    tier: db
+spec:
+  ports:
+  - protocol: TCP
+    port: 3306 #service-port
+    targetPort: 3306
+  clusterIP: None
+  selector:
+    app: mysql
+    project: robokart
+    tier: db

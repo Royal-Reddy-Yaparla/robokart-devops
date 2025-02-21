@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-green
+  namespace: robokart
+  labels: # these labels belong to deployment
+    app: web
+    project: robokart
+    tier: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels: # these labels should match with pod
+      app: web-green
+      project: robokart
+      version: 2.0.0
+  template: # this is the pod definition
+    metadata:
+      labels:
+        app: web-green
+        project: robokart
+        version: 2.0.0
+    spec:
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: web-green
+          items:
+          - key: nginx.conf
+            path: nginx.conf
+      containers:
+      - name: web
+        image: "iamroyalreddy/web:{{ .Values.deployment.imageVersion }}"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "68Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+        volumeMounts:
+        - name: nginx-conf # name of the volume you created above
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: web-green
+          items:
+            - key: nginx.conf
+              path: nginx.conf

@@ -1,0 +1,86 @@
+networks:
+  default:
+    external:
+      name: robokart
+volumes:
+  mongodb: #docker volume create mongodb
+  redis:
+  mysql:
+  rabbitmq:
+services:
+  mongodb:
+    image: mongodb:1.0
+    container_name: mongodb
+    volumes:
+    - source: mongodb
+      target: /data/db
+      type: volume
+  redis:
+    image: redis
+    container_name: redis
+    volumes:
+    - source: redis
+      target: /data
+      type: volume
+
+  mysql:
+    image: mysql:1.0 
+    container_name: mysql
+    volumes:
+    - source: mysql
+      target: /var/lib/mysql
+      type: volume
+
+  rabbitmq:
+    image: rabbitmq
+    container_name: rabbitmq
+    environment:
+    - RABBITMQ_DEFAULT_USER=roboshop
+    - RABBITMQ_DEFAULT_PASS=roboshop123
+    volumes:
+    - source: rabbitmq
+      target: /var/lib/rabbitmq
+      type: volume
+
+  catalogue:
+    image: catalogue:1.0 
+    container_name: catalogue
+    depends_on:
+      - mongodb
+  cart:
+    image: cart:1.0 
+    container_name: cart
+    depends_on:
+      - redis
+      - catalogue
+  user:
+    image: user:1.0
+    container_name: user
+    depends_on:
+      - redis
+      - mongodb
+  shipping:
+    image: shipping:1.0 
+    container_name: shipping
+    depends_on:
+      - mysql
+  payment:
+    image: payment:1.0
+    container_name: payment
+    depends_on:
+      - rabbitmq
+      - user
+      - cart
+
+
+  web:
+    image: web:1.0
+    container_name: web 
+    ports:
+      - "80:80"
+    depends_on:
+      - catalogue
+      - user
+      - cart
+      - shipping
+      - payment

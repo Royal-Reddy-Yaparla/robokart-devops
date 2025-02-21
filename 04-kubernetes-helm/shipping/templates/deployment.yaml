@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipping
+  namespace: robokart
+  labels: # these labels are deployment labels
+    app: shipping
+    project: robokart
+    tier: app
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels: # these labels are used to find the pods
+      app: shipping
+      project: robokart
+      tier: app
+  template:
+    metadata:
+      labels: # these labels are pod labels
+        app: shipping
+        project: robokart
+        tier: app
+    spec:
+      containers:
+      - name: shipping
+        image: "iamroyalreddy/shipping:{{ .Values.deployment.imageVersion }}"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "150m"
+            memory: "256Mi"
+          limits:
+            cpu: "300m"
+            memory: "512Mi"
+        envFrom:
+        - configMapRef:
+            name: shipping
